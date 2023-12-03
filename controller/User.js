@@ -1,19 +1,6 @@
 const { User } = require("../model/User");
 
-// exports.createUser = async (req, res) => {
-//     try {
-//         const user = newUser(req.body);
-//         const savedUser = await user.save();
 
-//         res.status(201).json(savedUser);
-
-//         console.log("product saved successfully");
-//     } catch (error) {
-
-//         console.error(error);
-//         res.status(400).json({ error: "Failed to create the User" });
-//     }
-// };
 exports.fetchUserById = async (req, res) => {
   const { id } = req.params;
   try {
