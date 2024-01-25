@@ -1,9 +1,18 @@
-const express = require('express');
-const { createOrder, fetchOrdersByUser, updateOrder, deleteOrder } = require('../controller/Order');
-
-
+const express = require("express");
+const {
+  createOrder,
+  fetchOrdersByUser,
+  updateOrder,
+  deleteOrder,
+  fetchAllOrders,
+} = require("../controller/Order");
 
 const router = express.Router();
 
-router.post('/',createOrder).get('/',fetchOrdersByUser).delete('/:id',deleteOrder).patch('/:id',updateOrder)
+router
+  .post("/", createOrder)
+  .get("/user/:userId", fetchOrdersByUser)
+  .delete("/:id", deleteOrder)
+  .patch("/:id", updateOrder)
+  .get("/", fetchAllOrders);
 exports.router = router;

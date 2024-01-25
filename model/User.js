@@ -2,21 +2,23 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
-    email: { type: 'String', required: true, unique: true },
-    password: { type: 'String', required: true ,unique:false  },
-    role: { type: 'String', required: true, default: 'user' },
-    //we make separate schema for this
-    addresses: { type: [Schema.Types.Mixed] },
-    name: { type: 'String' },
-    orders: { type: [Schema.Types.Mixed] },
+  email: { type: "String", required: true, unique: true },
+  password: { type: "String", required: true, unique: false },
+  role: { type: "String", required: true, default: "admin" },
+  //we make separate schema for this
+  addresses: { type: [Schema.Types.Mixed] },
+  name: { type: "String" },
+  orders: { type: [Schema.Types.Mixed] },
 });
-const virtual = userSchema.virtual('id');
+const virtual = userSchema.virtual("id");
 virtual.get(function () {
-    return this._id;
-})
-userSchema.set('toJSON', {
-    virtuals: true,
-    versionKey: false,
-    transform: function (doc, ret) { delete ret._id }
-})
+  return this._id;
+});
+userSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+  },
+});
 exports.User = mongoose.model("User", userSchema);

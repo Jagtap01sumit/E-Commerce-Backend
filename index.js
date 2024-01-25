@@ -1,32 +1,32 @@
 const express = require("express");
-const cors=require("cors");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const { createProduct } = require("./controller/Product");
-const productsRouters=require('./routes/Product')
-const categoriesRouters=require('./routes/Category')
-const brandsRouters=require('./routes/Brand')
-const usersRouter=require('./routes/User')
-const authRouter=require('./routes/Auth')
-const cartRouter=require('./routes/Cart')
-const orderRouter=require('./routes/Order')
-
+const productsRouters = require("./routes/Product");
+const categoriesRouters = require("./routes/Category");
+const brandsRouters = require("./routes/Brand");
+const usersRouter = require("./routes/User");
+const authRouter = require("./routes/Auth");
+const cartRouter = require("./routes/Cart");
+const orderRouter = require("./routes/Order");
 
 const server = express();
 
 // Middlewares
-server.use(cors({
-  exposedHeaders:['X-Total-Count']
-}))
+server.use(
+  cors({
+    exposedHeaders: ["X-Total-Count"],
+  })
+);
 server.use(express.json()); // To parse req.body
-server.use('/products',productsRouters.router)
-server.use('/categories',categoriesRouters.router)
-server.use('/brands',brandsRouters.router)
-server.use('/users',usersRouter.router)
-server.use('/auth',authRouter.router)
-server.use('/cart',cartRouter.router)
-server.use('/orders',orderRouter.router)
-
-
+server.use("/products", productsRouters.router);
+server.use("/categories", categoriesRouters.router);
+server.use("/brands", brandsRouters.router);
+server.use("/users", usersRouter.router);
+server.use("/auth", authRouter.router);
+server.use("/cart", cartRouter.router);
+server.use("/orders", orderRouter.router);
+// server.use("/auth/login", authRouter.router);
 const mongoURI =
   "mongodb+srv://jagtapsumit668:k9twuiN9AjhRZlro@cluster0.tz6fwxx.mongodb.net/e-commerce";
 
