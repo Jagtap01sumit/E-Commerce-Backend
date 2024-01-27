@@ -16,8 +16,8 @@ const passport = require("passport");
 const { User } = require("./model/User");
 const LocalStrategy = require("passport-local").Strategy;
 const crypto = require("crypto");
-const { isAuth, sanitizeUser } = require("./services/common");
-
+const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
+const cookieParser = require("cookie-parser");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
@@ -27,10 +27,10 @@ const SECRET_KEY = "SECRET_KEY";
 const server = express();
 
 //
-
+server.use(express.static("build"));
 //JWT options
 var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = SECRET_KEY;
 //
 //passport stratagies
@@ -42,13 +42,19 @@ server.use(
     // store: new SQLiteStore({ db: "sessions.db", dir: "./var/db" }),
   })
 );
+server.use(cookieParser());
 server.use(passport.authenticate("session"));
 
 passport.use(
   "local",
-  new LocalStrategy(async function (username, password, done) {
+  new LocalStrategy({ usernameField: "email" }, async function (
+    email,
+    password,
+    done
+  ) {
     try {
-      const user = await User.findOne({ email: username }).exec();
+      const user = await User.findOne({ email: email }).exec();
+      console.log(email, password, user);
       if (!user) {
         done(null, false, { message: "invalid credentials" });
       }
@@ -63,7 +69,7 @@ passport.use(
             done(null, false, { message: "invalid credentials" });
           } else {
             const token = jwt.sign(sanitizeUser(user), SECRET_KEY); ///sign -> first argument is payload and second is secret key
-            done(null, token);
+            done(null, { token });
           }
         }
       );
@@ -78,7 +84,7 @@ passport.use(
   new JwtStrategy(opts, async function (jwt_payload, done) {
     console.log("jwt payload", { jwt_payload });
     try {
-      const user = await User.findOne({ id: jwt_payload.sub });
+      const user = await User.findById(jwt_payload.id);
       if (user) {
         return done(null, sanitizeUser(user));
       } else {
