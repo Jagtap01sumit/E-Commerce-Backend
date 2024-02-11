@@ -9,6 +9,7 @@ const usersRouter = require("./routes/User");
 const authRouter = require("./routes/Auth");
 const cartRouter = require("./routes/Cart");
 const orderRouter = require("./routes/Order");
+require("dotenv").config();
 
 //
 const session = require("express-session");
@@ -21,7 +22,7 @@ const cookieParser = require("cookie-parser");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const jwt = require("jsonwebtoken");
-const SECRET_KEY = "SECRET_KEY";
+const SECRET_KEY = process.env.SECRET_KEY;
 
 //
 const server = express();
@@ -69,7 +70,7 @@ passport.use(
             done(null, false, { message: "invalid credentials" });
           } else {
             const token = jwt.sign(sanitizeUser(user), SECRET_KEY); ///sign -> first argument is payload and second is secret key
-            done(null, { token });
+            done(null, { id: user.id, role: user.role });
           }
         }
       );
@@ -108,7 +109,7 @@ passport.deserializeUser(function (user, cb) {
     return cb(null, user);
   });
 });
-//
+
 // Middlewares
 server.use(
   cors({
@@ -124,8 +125,7 @@ server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), orderRouter.router);
 // server.use("/auth/login", authRouter.router);
-const mongoURI =
-  "mongodb+srv://jagtapsumit668:k9twuiN9AjhRZlro@cluster0.tz6fwxx.mongodb.net/e-commerce";
+const mongoURI = process.env.MONGODB_URI;
 
 const connectToMongo = () => {
   mongoose
@@ -139,6 +139,32 @@ const connectToMongo = () => {
 };
 
 connectToMongo();
+
+//payments
+const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const calculateOrderAmount = (items) => {
+  return 1400;
+};
+server.post("/create-payment-intent", async (req, res) => {
+  const { items } = req.body;
+  console.log(items, "items");
+
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: calculateOrderAmount(items),
+    currency: "inr",
+
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+  });
+});
+
+//payments end
 
 server.get("/", (req, res) => {
   res.json({ status: "success" });

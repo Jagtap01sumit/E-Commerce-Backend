@@ -48,6 +48,36 @@ exports.loginUser = async (req, res) => {
   });
   res.json(req.user);
 };
-exports.checkUser = async (req, res) => {
-  res.json(req.user);
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    console.log("user", user);
+
+    console.log({ email });
+
+    if (user) {
+      // res.cookie(
+      //   "email",
+      //   { email },
+      //   {
+      //     expires: new Date(Date.now() + 3600000),
+      //     httpOnly: true,
+      //   }
+      // );
+      res.status(200).json({ message: "Email verified successfully" });
+    } else {
+      res.status(404).json("User not found");
+    }
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json("Internal Server Error");
+  }
+};
+exports.checkAuth = async (req, res) => {
+  if (req.user) {
+    res.json(req.user);
+  } else {
+    res.sendStatus(401);
+  }
 };
