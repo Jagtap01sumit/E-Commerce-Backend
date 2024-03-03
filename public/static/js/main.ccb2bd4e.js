@@ -13365,7 +13365,7 @@
                   for (;;)
                     switch ((e.prev = e.next)) {
                       case 0:
-                        return (e.next = 2), fetch("http://localhost:8080");
+                        return (e.next = 2), fetch("/");
                       case 2:
                         return (n = e.sent), (e.next = 5), n.json();
                       case 5:
