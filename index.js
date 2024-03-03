@@ -10,6 +10,7 @@ const authRouter = require("./routes/Auth");
 const cartRouter = require("./routes/Cart");
 const orderRouter = require("./routes/Order");
 require("dotenv").config();
+const path = require("path");
 
 //
 const session = require("express-session");
@@ -45,6 +46,9 @@ server.use(
 );
 server.use(cookieParser());
 server.use(passport.authenticate("session"));
+
+server.use("/public", express.static(path.join(__dirname, "/public")));
+server.use(express.static(path.join(__dirname, "/public")));
 
 passport.use(
   "local",
