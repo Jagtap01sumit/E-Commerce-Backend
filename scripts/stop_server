@@ -1,9 +1,41 @@
 #!/bin/bash
 
-# Source .bashrc to ensure environment variables are set
+# Source .bashrc and load nvm environment
 source ~/.bashrc
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
-# Load nvm environment
+# Use Node.js version 16
+nvm use 16
+
+# Get the full path to pm2
+PM2_PATH=$(which pm2)
+
+# Stopping existing Node.js servers using pm2
+echo "Stopping any existing node servers"
+$PM2_PATH kill
+#!/bin/bash
+
+# Source .bashrc and load nvm environment
+source ~/.bashrc
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Use Node.js version 16
+nvm use 16
+
+# Get the full path to pm2
+PM2_PATH=$(which pm2)
+
+# Stopping existing Node.js servers using pm2
+echo "Stopping any existing node servers"
+$PM2_PATH kill
+#!/bin/bash
+
+# Source .bashrc and load nvm environment
+source ~/.bashrc
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
